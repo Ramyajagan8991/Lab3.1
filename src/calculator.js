@@ -7,58 +7,80 @@
 // - multiplication
 // - division
 
-const [,, op, ...args] = process.argv;
-
-function showUsage() {
-  console.log('Usage: node src/calculator.js <operation> <num1> <num2>');
-  console.log('Supported operations: add, subtract, multiply, divide');
-  console.log('Example: node src/calculator.js add 5 3');
+function add(a, b) {
+  return a + b;
 }
 
-if (!op || args.length < 2) {
-  showUsage();
-  process.exit(1);
+function subtract(a, b) {
+  return a - b;
 }
 
-const x = Number(args[0]);
-const y = Number(args[1]);
-
-if (Number.isNaN(x) || Number.isNaN(y)) {
-  console.error('Error: both values must be valid numbers.');
-  showUsage();
-  process.exit(1);
+function multiply(a, b) {
+  return a * b;
 }
 
-let result;
-switch (op.toLowerCase()) {
-  case 'add':
-  case 'addition':
-    // addition
-    result = x + y;
-    break;
-  case 'subtract':
-  case 'subtraction':
-    // subtraction
-    result = x - y;
-    break;
-  case 'multiply':
-  case 'multiplication':
-    // multiplication
-    result = x * y;
-    break;
-  case 'divide':
-  case 'division':
-    // division
-    if (y === 0) {
-      console.error('Error: cannot divide by zero.');
-      process.exit(1);
-    }
-    result = x / y;
-    break;
-  default:
-    console.error(`Error: unknown operation '${op}'.`);
+function divide(a, b) {
+  if (b === 0) {
+    throw new Error('Cannot divide by zero.');
+  }
+  return a / b;
+}
+
+function calculate(operation, a, b) {
+  switch (operation.toLowerCase()) {
+    case 'add':
+    case 'addition':
+      return add(a, b);
+    case 'subtract':
+    case 'subtraction':
+      return subtract(a, b);
+    case 'multiply':
+    case 'multiplication':
+      return multiply(a, b);
+    case 'divide':
+    case 'division':
+      return divide(a, b);
+    default:
+      throw new Error(`Unknown operation: ${operation}`);
+  }
+}
+
+if (require.main === module) {
+  const [,, op, arg1, arg2] = process.argv;
+
+  function showUsage() {
+    console.log('Usage: node src/calculator.js <operation> <num1> <num2>');
+    console.log('Supported operations: add, subtract, multiply, divide');
+    console.log('Example: node src/calculator.js add 5 3');
+  }
+
+  if (!op || !arg1 || !arg2) {
     showUsage();
     process.exit(1);
+  }
+
+  const a = Number(arg1);
+  const b = Number(arg2);
+
+  if (Number.isNaN(a) || Number.isNaN(b)) {
+    console.error('Error: both values must be valid numbers.');
+    showUsage();
+    process.exit(1);
+  }
+
+  try {
+    const result = calculate(op, a, b);
+    console.log(result);
+  } catch (error) {
+    console.error(`Error: ${error.message}`);
+    process.exit(1);
+  }
 }
 
-console.log(result);
+module.exports = {
+  add,
+  subtract,
+  multiply,
+  divide,
+  calculate,
+};
