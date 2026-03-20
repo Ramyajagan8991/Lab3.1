@@ -1,4 +1,4 @@
-const { add, subtract, multiply, divide, calculate } = require('../calculator');
+const { add, subtract, multiply, divide, modulo, power, sqrt, calculate } = require('../calculator');
 
 describe('Node.js CLI calculator operations', () => {
   test('addition should add two numbers', () => {
@@ -21,23 +21,39 @@ describe('Node.js CLI calculator operations', () => {
     expect(() => divide(10, 0)).toThrow('Cannot divide by zero.');
   });
 
+  test('mod should compute remainder', () => {
+    expect(modulo(10, 3)).toBe(1);
+  });
+
+  test('modulo by zero should throw', () => {
+    expect(() => modulo(5, 0)).toThrow('Cannot modulo by zero.');
+  });
+
+  test('power should exponentiate', () => {
+    expect(power(2, 3)).toBe(8);
+  });
+
+  test('sqrt should compute square root', () => {
+    expect(sqrt(9)).toBe(3);
+  });
+
+  test('sqrt of negative should throw', () => {
+    expect(() => sqrt(-1)).toThrow('Cannot compute square root of negative number.');
+  });
+
   test('calculate add operation should return sum', () => {
     expect(calculate('add', 1, 2)).toBe(3);
   });
 
-  test('calculate subtract operation should return difference', () => {
-    expect(calculate('subtract', 7, 3)).toBe(4);
+  test('calculate sqrt operation should return square root', () => {
+    expect(calculate('sqrt', 16)).toBe(4);
   });
 
-  test('calculate multiply operation should return product', () => {
-    expect(calculate('multiply', 5, 5)).toBe(25);
+  test('calculate exponentiation operation should return power', () => {
+    expect(calculate('exponentiation', 3, 3)).toBe(27);
   });
 
-  test('calculate divide operation should return quotient', () => {
-    expect(calculate('divide', 10, 2)).toBe(5);
-  });
-
-  test('calculate should throw on unsupported operation', () => {
-    expect(() => calculate('mod', 10, 3)).toThrow('Unknown operation');
+  test('calculate unknown operation throws', () => {
+    expect(() => calculate('foo', 1, 2)).toThrow('Unknown operation');
   });
 });

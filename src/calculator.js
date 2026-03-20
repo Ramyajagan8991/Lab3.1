@@ -6,6 +6,9 @@
 // - subtraction
 // - multiplication
 // - division
+// - modulo
+// - exponentiation
+// - square root
 
 function add(a, b) {
   return a + b;
@@ -20,10 +23,22 @@ function multiply(a, b) {
 }
 
 function divide(a, b) {
-  if (b === 0) {
-    throw new Error('Cannot divide by zero.');
-  }
+  if (b === 0) throw new Error('Cannot divide by zero.');
   return a / b;
+}
+
+function modulo(a, b) {
+  if (b === 0) throw new Error('Cannot modulo by zero.');
+  return a % b;
+}
+
+function power(a, b) {
+  return Math.pow(a, b);
+}
+
+function sqrt(a) {
+  if (a < 0) throw new Error('Cannot compute square root of negative number.');
+  return Math.sqrt(a);
 }
 
 function calculate(operation, a, b) {
@@ -40,6 +55,16 @@ function calculate(operation, a, b) {
     case 'divide':
     case 'division':
       return divide(a, b);
+    case 'mod':
+    case 'modulo':
+      return modulo(a, b);
+    case 'pow':
+    case 'power':
+    case 'exponentiation':
+      return power(a, b);
+    case 'sqrt':
+    case 'squareroot':
+      return sqrt(a);
     default:
       throw new Error(`Unknown operation: ${operation}`);
   }
@@ -49,20 +74,21 @@ if (require.main === module) {
   const [,, op, arg1, arg2] = process.argv;
 
   function showUsage() {
-    console.log('Usage: node src/calculator.js <operation> <num1> <num2>');
-    console.log('Supported operations: add, subtract, multiply, divide');
+    console.log('Usage: node src/calculator.js <operation> <num1> [num2]');
+    console.log('Supported operations: add, subtract, multiply, divide, modulo, pow, sqrt');
     console.log('Example: node src/calculator.js add 5 3');
+    console.log('Example sqrt: node src/calculator.js sqrt 9');
   }
 
-  if (!op || !arg1 || !arg2) {
+  if (!op || !arg1) {
     showUsage();
     process.exit(1);
   }
 
   const a = Number(arg1);
-  const b = Number(arg2);
+  const b = arg2 !== undefined ? Number(arg2) : undefined;
 
-  if (Number.isNaN(a) || Number.isNaN(b)) {
+  if (Number.isNaN(a) || (arg2 !== undefined && Number.isNaN(b))) {
     console.error('Error: both values must be valid numbers.');
     showUsage();
     process.exit(1);
@@ -82,5 +108,8 @@ module.exports = {
   subtract,
   multiply,
   divide,
+  modulo,
+  power,
+  sqrt,
   calculate,
 };
